@@ -61,8 +61,19 @@ main(int argc, char **argv)
 	/* performing markdown parsing */
 	ob = bufnew(OUTPUT_UNIT);
 
-	sdhtml_renderer(&callbacks, &options, 0);
-	markdown = sd_markdown_new(0, 16, &callbacks, &options);
+	unsigned int render_flags = HTML_HARD_WRAP;
+	unsigned int extensions =   MKDEXT_NO_INTRA_EMPHASIS |
+	                            MKDEXT_TABLES |
+	                            MKDEXT_FENCED_CODE |
+	                            MKDEXT_AUTOLINK |
+	                            MKDEXT_STRIKETHROUGH |
+	                            MKDEXT_SPACE_HEADERS |
+	                            MKDEXT_SUPERSCRIPT |
+	                            MKDEXT_LAX_SPACING |
+								MKDEXT_FOOTNOTES;
+
+	sdhtml_renderer(&callbacks, &options, render_flags);
+	markdown = sd_markdown_new(extensions, 16, &callbacks, &options);
 
 	sd_markdown_render(ob, ib->data, ib->size, markdown);
 	sd_markdown_free(markdown);
